@@ -1,0 +1,34 @@
+{
+    "name": "webpack-i18n",
+    "version": "0.1.0",
+    "description": "Go from gettext catalog (.po files) to embeded localization in your Webpack bundles",
+    "main": "index.js",
+    "scripts": {
+        "test": "echo \"Error: no test specified\" && exit 1",
+        "build:example": "(cd example && webpack)"
+    },
+    "dependencies": {
+        "i18next-conv": "^4.0.3",
+        "webpack-sources": "^1.0.1"
+    },
+    "devDependencies": {
+        "webpack": "^2.6.1"
+    },
+    "peerDependencies": {
+        "webpack": "^2.0.0"
+    },
+    "repository": {
+        "type": "git",
+        "url": "git+https://github.com/finishearly/webpack-i18n.git"
+    },
+    "keywords": [
+        "webpack",
+        "i18n"
+    ],
+    "author": "Derek Irving",
+    "license": "MIT",
+    "bugs": {
+        "url": "https://github.com/finishearly/webpack-i18n/issues"
+    },
+    "homepage": "https://github.com/finishearly/webpack-i18n#readme"
+}
