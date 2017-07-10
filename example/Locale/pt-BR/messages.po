@@ -1,0 +1,26 @@
+msgid ""
+msgstr ""
+"Project-Id-Version: \n"
+"POT-Creation-Date: 2017-07-06 09:42+01:00\n"
+"PO-Revision-Date: 2017-07-06 09:42+01:00\n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=utf-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+"X-Generator: i18n.POTGenerator\n"
+
+#: _Layout.html:19
+msgid "Log off"
+msgstr "Sair"
+
+#: _Layout.html:23
+msgid "Login using"
+msgstr "Entrar usando"
+
+#: Errors\Http404.html:6
+msgid "Page not found"
+msgstr "Página não encontrada"
+
+#: Errors\Http500.html:5
+msgid "Server Error"
+msgstr "Erro no servidor"
+
