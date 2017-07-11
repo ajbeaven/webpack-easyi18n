@@ -1,6 +1,6 @@
 {
     "name": "webpack-i18n",
-    "version": "0.1.0",
+    "version": "0.1.3",
     "description": "Go from gettext catalog (.po files) to embeded localization in your Webpack bundles",
     "main": "index.js",
     "scripts": {
