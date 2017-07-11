@@ -7,15 +7,9 @@
         "test": "echo \"Error: no test specified\" && exit 1",
         "build:example": "(cd example && webpack)"
     },
-    "dependencies": {
-        "i18next-conv": "^4.0.3",
-        "webpack-sources": "^1.0.1"
-    },
     "devDependencies": {
+		"i18next-conv": "^4.0.3",
         "webpack": "^2.6.1"
-    },
-    "peerDependencies": {
-        "webpack": "^2.0.0"
     },
     "repository": {
         "type": "git",
