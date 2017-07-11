@@ -1,15 +1,17 @@
 {
     "name": "webpack-i18n",
-    "version": "0.1.3",
+    "version": "0.1.5",
     "description": "Go from gettext catalog (.po files) to embeded localization in your Webpack bundles",
     "main": "index.js",
     "scripts": {
         "test": "echo \"Error: no test specified\" && exit 1",
         "build:example": "(cd example && webpack)"
     },
-    "devDependencies": {
-		"i18next-conv": "^4.0.3",
-        "webpack": "^2.6.1"
+    "dependencies": {
+        "i18next-conv": "^4.0.3"
+    },
+    "peerDependencies": {
+        "webpack": "^2.0.0"
     },
     "repository": {
         "type": "git",
