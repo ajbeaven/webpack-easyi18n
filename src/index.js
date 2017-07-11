@@ -7,7 +7,8 @@ const {
 } = require("fs");
 const gettextToI18Next = require("i18next-conv").gettextToI18next;
 
-function I18nPlugin(options) {
+function I18nPlugin(locale, options) {
+    this.locale = locale;
     this.options = options || {};
 }
 
@@ -17,7 +18,7 @@ function save(target) {
     };
 }
 
-const mkdir = function (dirPath) {
+const mkdir = function(dirPath) {
     try {
         mkdirSync(dirPath);
     } catch (err) {
@@ -25,40 +26,36 @@ const mkdir = function (dirPath) {
     }
 };
 
-I18nPlugin.prototype.apply = function (compiler) {
+I18nPlugin.prototype.apply = function(compiler) {
     var self = this;
-    if (self.options.locale[1] !== null) {
-        const poPath = path.join(self.options.localesPath, self.options.locale[1]);
-        const locale = self.options.locale[0];
+    if (self.locale[1] !== null) {
+        var poPath = path.join(self.options.localesPath, self.locale[1]);
+        var locale = self.locale[0];
 
-        mkdir(path.resolve(path.join(self.options.srcPath, "/tmp/")));
+        mkdir(path.resolve(path.join(self.options.localesPath, "/webpack-i18n-temp/")));
 
         gettextToI18Next(locale, readFileSync(poPath), {})
-            .then(save(path.join(self.options.srcPath, `/tmp/${locale}.json`)));
+            .then(save(path.join(self.options.localesPath, `/webpack-i18n-temp/${locale}.json`)));
     }
 
-    compiler.plugin("done",
-        function () {
-            console.log(`i18n translated ${self.options.locale}`);
-        });
 
-    var regex = typeof (self.options.regex) === "undefined" ?
+    var regex = typeof(self.options.regex) === "undefined" ?
         /\[\[\[(.+?)(?:\|\|\|(.+?))*(?:\/\/\/(.+?))?\]\]\]/g :
         self.options.regex;
 
     compiler.plugin("compilation",
-        function (compilation) {
+        function(compilation) {
 
             compilation.plugin("optimize-chunk-assets",
-                function (chunks, callback) {
+                function(chunks, callback) {
 
                     var locale;
-                    if (self.options.locale[1] !== null) {
-                        locale = require(path.join(self.options.srcPath, `/tmp/${self.options.locale[0]}.json`));
+                    if (self.locale[1] !== null) {
+                        locale = require(path.join(self.options.localesPath, `/webpack-i18n-temp/${self.locale[0]}.json`));
                     }
 
-                    chunks.forEach(function (chunk) {
-                        chunk.files.forEach(function (file) {
+                    chunks.forEach(function(chunk) {
+                        chunk.files.forEach(function(file) {
                             var source = compilation.assets[file].source();
                             while ((m = regex.exec(source)) !== null) {
 
@@ -66,13 +63,13 @@ I18nPlugin.prototype.apply = function (compiler) {
                                     regex.lastIndex++;
                                 }
 
-                                if (self.options.locale[1] === null) {
+                                if (self.locale[1] === null) {
                                     source = source.replace(m[0], m[1]);
                                 } else {
                                     const replacement = locale[m[1]];
-                                    if (typeof (replacement) === "undefined") {
+                                    if (typeof(replacement) === "undefined") {
                                         compilation.warnings.push(
-                                            new Error(`Missing translation, '${m[1]}' : ${self.options.locale[0]}`));
+                                            new Error(`Missing translation, '${m[1]}' : ${self.locale[0]}`));
                                     } else {
                                         source = source.replace(m[0], replacement);
                                     }
@@ -80,7 +77,7 @@ I18nPlugin.prototype.apply = function (compiler) {
                             }
 
                             compilation.assets[file] =
-                                new ConcatSource(`/**i18n replaced ${self.options.locale[0]}**/`, "\n", source);
+                                new ConcatSource(`/**i18n replaced ${self.locale[0]}**/`, "\n", source);
                         });
                     });
                     callback();
