@@ -21,7 +21,7 @@ Add the webpack-i18n plugin to your Webpack config (notice the 'Locales' variabl
 ```js
 const Path = require("path");
 const Webpack = require("webpack");
-const I18N = require("../src");
+const I18N = require("webpack-i18n");
 
 var Locales = {
     "en-gb": null, // Your application default language
