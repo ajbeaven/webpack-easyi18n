@@ -7,8 +7,9 @@ var Locales = {
     "pt-br": "pt-BR/messages.po"
 };
 
-module.exports = Object.keys(Locales).map(function (locale) {
-    const plugins = [];
+module.exports = Object.keys(Locales).map(function(locale) {
+
+    var plugins = [];
 
     return {
         entry: Path.join(__dirname, "src", "index"),
@@ -19,10 +20,9 @@ module.exports = Object.keys(Locales).map(function (locale) {
             publicPath: ""
         },
         plugins: plugins.concat([
-            new I18N({
+            new I18N([locale, Locales[locale]], {
                 srcPath: Path.join(__dirname, "./src"),
                 localesPath: Path.join(__dirname, "./Locale"),
-                locale: [locale, Locales[locale]],
                 regex: /\[\[\[(.+?)(?:\|\|\|(.+?))*(?:\/\/\/(.+?))?\]\]\]/g
             })
         ])
