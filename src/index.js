@@ -70,6 +70,9 @@ I18nPlugin.prototype.apply = function(compiler) {
                                     if (typeof(replacement) === "undefined") {
                                         compilation.warnings.push(
                                             new Error(`Missing translation, '${m[1]}' : ${self.locale[0]}`));
+                                        if(self.options.alwaysRemoveBrackets){
+                                            source = source.replace(m[0], m[1]);
+                                        }
                                     } else {
                                         source = source.replace(m[0], replacement);
                                     }
