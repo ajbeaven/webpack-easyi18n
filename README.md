@@ -58,6 +58,7 @@ module.exports = Object.keys(Locales).map(function(locale) {
 |**`srcPath`**|`{String}`|Directory that should be used to locate your source files with strings for replacement _(required)_|
 |**`localesPath`**|`{String}`|Directory containing the po files as referenced by 'Locales'  _(required)_|
 |**`regex`**|`{String}`| The delimiter token sequence _(default:[[[]]])_|
+|**`alwaysRemoveBrackets`**|`{Boolean}`| If alwaysRemoveBrackets is true then the original string is retained but the brackets are removed _(default:false)_|
 
 A 'webpack-i18n-temp' directory beneath you locales directory is created on each Webpack build. There is no need to deploy this directory to production and can be removed, for example using rimraf and the WebpackShellPlugin:
 
