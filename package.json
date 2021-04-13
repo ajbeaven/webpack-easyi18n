@@ -11,7 +11,8 @@
     "main": "src/index.js",
     "scripts": {
         "test": "echo \"Error: no test specified\" && exit 1",
-        "build:example": "(cd example && webpack)"
+        "clean:example": "rimraf example\\dist",
+        "build:example": "npm run clean:example && webpack -c example\\webpack.config.js"
     },
     "dependencies": {
         "i18next-conv": "^4.0.3"
@@ -29,5 +30,10 @@
     "bugs": {
         "url": "https://github.com/finishearly/webpack-i18n/issues"
     },
-    "homepage": "https://github.com/finishearly/webpack-i18n#readme"
+    "homepage": "https://github.com/finishearly/webpack-i18n#readme",
+    "devDependencies": {
+        "rimraf": "^3.0.2",
+        "webpack": "^5.32.0",
+        "webpack-cli": "^4.6.0"
+    }
 }
