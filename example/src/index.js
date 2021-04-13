@@ -3,3 +3,4 @@ document.write("[[[Log off]]]");
 document.write("[[[Page not found]]]");
 document.write("[[[Server Error]]]");
 document.write("[[[Forgot Translation]]]");
+document.write("[[[Second Forgot Translation]]]");
