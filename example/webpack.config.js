@@ -12,6 +12,7 @@ module.exports = Object.keys(Locales).map(function(locale) {
     var plugins = [];
 
     return {
+        mode: 'development',
         entry: Path.join(__dirname, "src", "index"),
         devtool: "source-map",
         output: {

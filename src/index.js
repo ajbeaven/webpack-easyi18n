@@ -43,49 +43,44 @@ I18nPlugin.prototype.apply = function(compiler) {
         /\[\[\[(.+?)(?:\|\|\|(.+?))*(?:\/\/\/(.+?))?\]\]\]/g :
         self.options.regex;
 
-    compiler.plugin("compilation",
-        function(compilation) {
+    compiler.hooks.compilation.tap('I18nPlugin', (compilation) => {
+      compilation.hooks.optimizeChunks.tap('I18nPlugin', (chunks) => {
+        var locale;
+		if (self.locale[1] !== null) {
+			locale = require(path.join(self.options.localesPath, `/webpack-i18n-temp/${self.locale[0]}.json`));
+		}
 
-            compilation.plugin("optimize-chunk-assets",
-                function(chunks, callback) {
+		chunks.forEach(function(chunk) {
+			chunk.files.forEach(function(file) {
+				var source = compilation.assets[file].source();
+				while ((m = regex.exec(source)) !== null) {
 
-                    var locale;
-                    if (self.locale[1] !== null) {
-                        locale = require(path.join(self.options.localesPath, `/webpack-i18n-temp/${self.locale[0]}.json`));
-                    }
+					if (m.index === regex.lastIndex) {
+						regex.lastIndex++;
+					}
 
-                    chunks.forEach(function(chunk) {
-                        chunk.files.forEach(function(file) {
-                            var source = compilation.assets[file].source();
-                            while ((m = regex.exec(source)) !== null) {
+					if (self.locale[1] === null) {
+						source = source.replace(m[0], m[1]);
+					} else {
+						const replacement = locale[m[1]];
+						if (typeof(replacement) === "undefined") {
+							compilation.warnings.push(
+								new Error(`Missing translation, '${m[1]}' : ${self.locale[0]}`));
+							if(self.options.alwaysRemoveBrackets){
+								source = source.replace(m[0], m[1]);
+							}
+						} else {
+							source = source.replace(m[0], replacement);
+						}
+					}
+				}
 
-                                if (m.index === regex.lastIndex) {
-                                    regex.lastIndex++;
-                                }
-
-                                if (self.locale[1] === null) {
-                                    source = source.replace(m[0], m[1]);
-                                } else {
-                                    const replacement = locale[m[1]];
-                                    if (typeof(replacement) === "undefined") {
-                                        compilation.warnings.push(
-                                            new Error(`Missing translation, '${m[1]}' : ${self.locale[0]}`));
-                                        if(self.options.alwaysRemoveBrackets){
-                                            source = source.replace(m[0], m[1]);
-                                        }
-                                    } else {
-                                        source = source.replace(m[0], replacement);
-                                    }
-                                }
-                            }
-
-                            compilation.assets[file] =
-                                new ConcatSource(`/**i18n replaced ${self.locale[0]}**/`, "\n", source);
-                        });
-                    });
-                    callback();
-                });
-        });
+				compilation.assets[file] =
+					new ConcatSource(`/**i18n replaced ${self.locale[0]}**/`, "\n", source);
+			});
+		});
+      });
+    });
 };
 
 module.exports = I18nPlugin;
