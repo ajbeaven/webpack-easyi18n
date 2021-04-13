@@ -18,7 +18,7 @@ function save(target) {
     };
 }
 
-const mkdir = function(dirPath) {
+const mkdir = function (dirPath) {
     try {
         mkdirSync(dirPath);
     } catch (err) {
@@ -26,7 +26,7 @@ const mkdir = function(dirPath) {
     }
 };
 
-I18nPlugin.prototype.apply = function(compiler) {
+I18nPlugin.prototype.apply = function (compiler) {
     var self = this;
     if (self.locale[1] !== null) {
         var poPath = path.join(self.options.localesPath, self.locale[1]);
@@ -39,47 +39,47 @@ I18nPlugin.prototype.apply = function(compiler) {
     }
 
 
-    var regex = typeof(self.options.regex) === "undefined" ?
+    var regex = typeof (self.options.regex) === "undefined" ?
         /\[\[\[(.+?)(?:\|\|\|(.+?))*(?:\/\/\/(.+?))?\]\]\]/g :
         self.options.regex;
 
     compiler.hooks.compilation.tap('I18nPlugin', (compilation) => {
-      compilation.hooks.optimizeChunks.tap('I18nPlugin', (chunks) => {
-        var locale;
-		if (self.locale[1] !== null) {
-			locale = require(path.join(self.options.localesPath, `/webpack-i18n-temp/${self.locale[0]}.json`));
-		}
+        compilation.hooks.optimizeChunks.tap('I18nPlugin', (chunks) => {
+            var locale;
+            if (self.locale[1] !== null) {
+                locale = require(path.join(self.options.localesPath, `/webpack-i18n-temp/${self.locale[0]}.json`));
+            }
 
-		chunks.forEach(function(chunk) {
-			chunk.files.forEach(function(file) {
-				var source = compilation.assets[file].source();
-				while ((m = regex.exec(source)) !== null) {
+            chunks.forEach(function (chunk) {
+                chunk.files.forEach(function (file) {
+                    var source = compilation.assets[file].source();
+                    while ((m = regex.exec(source)) !== null) {
 
-					if (m.index === regex.lastIndex) {
-						regex.lastIndex++;
-					}
+                        if (m.index === regex.lastIndex) {
+                            regex.lastIndex++;
+                        }
 
-					if (self.locale[1] === null) {
-						source = source.replace(m[0], m[1]);
-					} else {
-						const replacement = locale[m[1]];
-						if (typeof(replacement) === "undefined") {
-							compilation.warnings.push(
-								new Error(`Missing translation, '${m[1]}' : ${self.locale[0]}`));
-							if(self.options.alwaysRemoveBrackets){
-								source = source.replace(m[0], m[1]);
-							}
-						} else {
-							source = source.replace(m[0], replacement);
-						}
-					}
-				}
+                        if (self.locale[1] === null) {
+                            source = source.replace(m[0], m[1]);
+                        } else {
+                            const replacement = locale[m[1]];
+                            if (typeof (replacement) === "undefined" || replacement === "") {
+                                compilation.warnings.push(
+                                    new Error(`Missing translation, '${m[1]}' : ${self.locale[0]}`));
+                                if (self.options.alwaysRemoveBrackets) {
+                                    source = source.replace(m[0], m[1]);
+                                }
+                            } else {
+                                source = source.replace(m[0], replacement);
+                            }
+                        }
+                    }
 
-				compilation.assets[file] =
-					new ConcatSource(`/**i18n replaced ${self.locale[0]}**/`, "\n", source);
-			});
-		});
-      });
+                    compilation.assets[file] =
+                        new ConcatSource(`/**i18n replaced ${self.locale[0]}**/`, "\n", source);
+                });
+            });
+        });
     });
 };
 

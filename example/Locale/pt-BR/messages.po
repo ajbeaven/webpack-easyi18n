@@ -16,6 +16,10 @@ msgstr "Sair"
 msgid "Login using"
 msgstr "Entrar usando"
 
+#: _Layout.html:19
+msgid "Second Forgot Translation"
+msgstr ""
+
 #: Errors\Http404.html:6
 msgid "Page not found"
 msgstr "Página não encontrada"
