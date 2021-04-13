@@ -7,9 +7,13 @@ const {
 } = require("fs");
 const gettextToI18Next = require("i18next-conv").gettextToI18next;
 
-function I18nPlugin(locale, options) {
+const defaultOptions = {
+    alwaysRemoveBrackets: true,
+};
+
+function I18nPlugin(locale, options = {}) {
     this.locale = locale;
-    this.options = options || {};
+    this.options = Object.assign({}, options, defaultOptions);
 }
 
 function save(target) {
