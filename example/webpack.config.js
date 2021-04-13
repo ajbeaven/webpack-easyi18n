@@ -1,6 +1,6 @@
 const Path = require("path");
 const Webpack = require("webpack");
-const I18N = require("webpack-i18n");
+const I18N = require("../src"); //require('webpack-i18n')
 
 var Locales = {
     "en-gb": null,
