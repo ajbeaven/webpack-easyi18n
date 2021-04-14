@@ -20,6 +20,10 @@ msgstr "Entrar usando"
 msgid "Second Forgot Translation"
 msgstr ""
 
+#: _Layout.html:19
+msgid "Hello, %0. My Name is %1."
+msgstr "Olá %0. Meu nome é %1."
+
 #: Errors\Http404.html:6
 msgid "Page not found"
 msgstr "Página não encontrada"
@@ -27,4 +31,3 @@ msgstr "Página não encontrada"
 #: Errors\Http500.html:5
 msgid "Server Error"
 msgstr "Erro no servidor"
-
