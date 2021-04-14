@@ -44,9 +44,7 @@ I18nPlugin.prototype.apply = function (compiler) {
     }
 
 
-    var regex = typeof (self.options.regex) === "undefined" ?
-        /\[\[\[(.+?)(?:\|\|\|(.+?))*(?:\/\/\/(.+?))?\]\]\]/g :
-        self.options.regex;
+    var regex = self.options.regex;
 
     compiler.hooks.emit.tapAsync('I18nPlugin', (compilation, callback) => {
         // Explore each chunk (build output):
