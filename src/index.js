@@ -8,7 +8,6 @@ const {
 const gettextToI18Next = require("i18next-conv").gettextToI18next;
 
 const defaultOptions = {
-    regex: /\[\[\[(.+?)((?:\|\|\|(.+?))*)(?:\/\/\/(.+?))?\]\]\]/g,
     alwaysRemoveBrackets: true,
 };
 
@@ -44,7 +43,7 @@ I18nPlugin.prototype.apply = function (compiler) {
     }
 
 
-    var regex = self.options.regex;
+    var regex = /\[\[\[(.+?)((?:\|\|\|(.+?))*)(?:\/\/\/(.+?))?\]\]\]/g;
 
     compiler.hooks.emit.tapAsync('I18nPlugin', (compilation, callback) => {
         // Explore each chunk (build output):
