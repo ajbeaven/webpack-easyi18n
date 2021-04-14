@@ -8,7 +8,7 @@ const {
 const gettextToI18Next = require("i18next-conv").gettextToI18next;
 
 const defaultOptions = {
-    regex: /\[\[\[(.+?)(?:\|\|\|(.+?))*(?:\/\/\/(.+?))?\]\]\]/g,
+    regex: /\[\[\[(.+?)((?:\|\|\|(.+?))*)(?:\/\/\/(.+?))?\]\]\]/g,
     alwaysRemoveBrackets: true,
 };
 
@@ -68,7 +68,7 @@ I18nPlugin.prototype.apply = function (compiler) {
                     if (self.locale[1] === null) {
                         source = source.replace(m[0], m[1]);
                     } else {
-                        const replacement = locale[m[1]];
+                        let replacement = locale[m[1]];
                         if (typeof (replacement) === "undefined" || replacement === "") {
                             compilation.warnings.push(
                                 new Error(`Missing translation, '${m[1]}' : ${self.locale[0]}`));
@@ -76,6 +76,21 @@ I18nPlugin.prototype.apply = function (compiler) {
                                 source = source.replace(m[0], m[1]);
                             }
                         } else {
+                            var formatItemsGroup = m[2];
+                            if (formatItemsGroup) {
+                                const formatItems = formatItemsGroup
+                                    .slice(3)
+                                    .split('|||');
+
+                                replacement = replacement.replace(/(%\d+)/g, (value) => {
+                                    var identifier = parseInt(value.slice(1));
+                                    if (!isNaN(identifier) && formatItems.length > identifier) {
+                                        return formatItems[identifier];
+                                    } else {
+                                        return value;
+                                    }
+                                });
+                            }
                             source = source.replace(m[0], replacement);
                         }
                     }
