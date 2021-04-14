@@ -25,7 +25,7 @@
         "webpack",
         "i18n"
     ],
-    "author": "Derek Irving",
+    "author": "Andrew Beaven",
     "license": "MIT",
     "bugs": {
         "url": "https://github.com/ajbeaven/webpack-easyi18n/issues"
