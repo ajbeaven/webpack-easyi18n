@@ -1,5 +1,5 @@
 {
-    "name": "webpack-i18n",
+    "name": "webpack-easyi18n",
     "version": "0.1.8",
     "description": "Go from gettext catalog (.po files) to embeded localization in your Webpack bundles",
     "engines": {
@@ -19,7 +19,7 @@
     },
     "repository": {
         "type": "git",
-        "url": "git+https://github.com/finishearly/webpack-i18n.git"
+        "url": "git+https://github.com/ajbeaven/webpack-easyi18n.git"
     },
     "keywords": [
         "webpack",
@@ -28,9 +28,9 @@
     "author": "Derek Irving",
     "license": "MIT",
     "bugs": {
-        "url": "https://github.com/finishearly/webpack-i18n/issues"
+        "url": "https://github.com/ajbeaven/webpack-easyi18n/issues"
     },
-    "homepage": "https://github.com/finishearly/webpack-i18n#readme",
+    "homepage": "https://github.com/ajbeaven/webpack-easyi18n#readme",
     "devDependencies": {
         "rimraf": "^3.0.2",
         "webpack": "^5.32.0",

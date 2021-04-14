@@ -1,10 +1,10 @@
-# webpack-i18n
+# webpack-easyi18n
 ### Go from [gettext](https://en.wikipedia.org/wiki/Gettext) catalog (.po files) to embeded localization in your Webpack bundles.
 
 ```bash
-npm install --save-dev webpack-i18n
+npm install --save-dev webpack-easyi18n
 ```
-Originally designed for use with [turquoiseowl/i18n](https://github.com/turquoiseowl/i18n) but should work with any .po file generation mechanism.
+Designed for use with [EasyI18n].
 
 ### Usage
 
@@ -16,12 +16,12 @@ document.write("[[[Login using]]]");
 
 Make your translations (for example using [Poedit](https://poedit.net/)) to create the .po files
 
-Add the webpack-i18n plugin to your Webpack config (notice the 'Locales' variable that indicates language/.po location):
+Add the easy plugin to your Webpack config (notice the 'Locales' variable that indicates language/.po location):
 
 ```js
 const Path = require("path");
 const Webpack = require("webpack");
-const I18N = require("webpack-i18n");
+const EasyI18nPlugin = require("webpack-easyi18n");
 
 var Locales = {
     "en-gb": null, // Your application default language
@@ -41,10 +41,9 @@ module.exports = Object.keys(Locales).map(function(locale) {
             publicPath: ""
         },
         plugins: plugins.concat([
-            new I18N([locale, Locales[locale]], {
+            new EasyI18nPlugin([locale, Locales[locale]], {
                 srcPath: Path.join(__dirname, "./src"),
-                localesPath: Path.join(__dirname, "./Locale"),
-                regex: /\[\[\[(.+?)(?:\|\|\|(.+?))*(?:\/\/\/(.+?))?\]\]\]/g
+                localesPath: Path.join(__dirname, "./Locale")
             })
         ])
     };
@@ -57,11 +56,10 @@ module.exports = Object.keys(Locales).map(function(locale) {
 |:--:|:--:|:----------|
 |**`srcPath`**|`{String}`|Directory that should be used to locate your source files with strings for replacement _(required)_|
 |**`localesPath`**|`{String}`|Directory containing the po files as referenced by 'Locales'  _(required)_|
-|**`regex`**|`{String}`| The delimiter token sequence _(default:[[[]]])_|
 |**`alwaysRemoveBrackets`**|`{Boolean}`| If alwaysRemoveBrackets is true then the original string is retained but the brackets are removed _(default:false)_|
 
-A 'webpack-i18n-temp' directory beneath you locales directory is created on each Webpack build. There is no need to deploy this directory to production and can be removed, for example using rimraf and the WebpackShellPlugin:
+A 'webpack-easyi18n-temp' directory beneath you locales directory is created on each Webpack build. There is no need to deploy this directory to production and can be removed, for example using rimraf and the WebpackShellPlugin:
 
 ```js
-new WebpackShellPlugin({ onBuildStart: ['echo "Webpack Start"'], onBuildEnd: ['rimraf ./locales/webpack-i18n-temp'] })
+new WebpackShellPlugin({ onBuildStart: ['echo "Webpack Start"'], onBuildEnd: ['rimraf ./locales/webpack-easyi18n-temp'] })
 ```
