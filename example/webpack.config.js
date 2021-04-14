@@ -7,7 +7,7 @@ var Locales = {
     "pt-br": "pt-BR/messages.po"
 };
 
-module.exports = Object.keys(Locales).map(function(locale) {
+module.exports = Object.keys(Locales).map(function (locale) {
 
     var plugins = [];
 
@@ -24,7 +24,6 @@ module.exports = Object.keys(Locales).map(function(locale) {
             new I18N([locale, Locales[locale]], {
                 srcPath: Path.join(__dirname, "./src"),
                 localesPath: Path.join(__dirname, "./Locale"),
-                regex: /\[\[\[(.+?)(?:\|\|\|(.+?))*(?:\/\/\/(.+?))?\]\]\]/g
             })
         ])
     };
