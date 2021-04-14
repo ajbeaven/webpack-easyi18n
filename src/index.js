@@ -8,6 +8,7 @@ const {
 const gettextToI18Next = require("i18next-conv").gettextToI18next;
 
 const defaultOptions = {
+    regex: /\[\[\[(.+?)(?:\|\|\|(.+?))*(?:\/\/\/(.+?))?\]\]\]/g,
     alwaysRemoveBrackets: true,
 };
 
