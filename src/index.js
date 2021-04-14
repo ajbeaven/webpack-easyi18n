@@ -75,7 +75,7 @@ EasyI18nPlugin.prototype.apply = function (compiler) {
                         let replacement = locale[m[1]];
                         if (typeof (replacement) === "undefined" || replacement === "") {
                             compilation.warnings.push(
-                                new Error(`Missing translation, '${m[1]}' : ${self.locale[0]}`));
+                                new Error(`Missing translation in ${filename}.\n '${m[1]}' : ${self.locale[0]}`));
                             if (self.options.alwaysRemoveBrackets) {
                                 source = source.replace(m[0], m[1]);
                             }
