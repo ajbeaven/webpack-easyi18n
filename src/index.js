@@ -43,7 +43,7 @@ EasyI18nPlugin.prototype.apply = function (compiler) {
     }
 
 
-    var regex = /\[\[\[(.+?)((?:\|\|\|(.+?))*)(?:\/\/\/(.+?))?\]\]\]/g;
+    var regex = /\[\[\[(.+?)((?:\|\|\|(.+?))*)(?:\/\/\/(.+?))?\]\]\]/gs;
 
     compiler.hooks.emit.tapAsync('EasyI18nPlugin', (compilation, callback) => {
         // Explore each chunk (build output):
