@@ -42,8 +42,17 @@ EasyI18nPlugin.prototype.apply = function (compiler) {
             .then(save(path.join(self.options.localesPath, `/webpack-easyi18n-temp/${locale}.json`)));
     }
 
-
-    var regex = /\[\[\[(.+?)((?:\|\|\|(.+?))*)(?:\/\/\/(.+?))?\]\]\]/gs;
+    // Unfortunately the regex below doesn't work as js flavoured regex makes only the last capture included
+    // in a capture group available (unlike .NET which lets you iterate over all captures in a group).
+    // This means formatable nuggets with multiple formatable items will fail.
+    //
+    // Take the following nugget for example:
+    // - [[[%0 %1|||1|||2]]]
+    //
+    // The regex below will only include "2" in the second capture group, rather than all captures "1|||2".
+    // We need to do multiple rounds of parsing in order to work around this
+    //var regex = /\[\[\[(.+?)(?:\|\|\|(.+?))*(?:\/\/\/(.+?))?\]\]\]/s;
+    var regex = /\[\[\[(.+?)(?:\|\|\|.+?)*(?:\/\/\/(.+?))?\]\]\]/s;
 
     compiler.hooks.emit.tapAsync('EasyI18nPlugin', (compilation, callback) => {
         // Explore each chunk (build output):
@@ -64,40 +73,49 @@ EasyI18nPlugin.prototype.apply = function (compiler) {
                 if (!modifyFile) return;
 
                 while ((m = regex.exec(source)) !== null) {
-
                     if (m.index === regex.lastIndex) {
                         regex.lastIndex++;
                     }
 
+                    const nuggetSyntaxRemoved = m[1]
                     if (self.locale[1] === null) {
-                        source = source.replace(m[0], m[1]);
+                        replacement = nuggetSyntaxRemoved;
                     } else {
-                        let replacement = locale[m[1]];
+                        // .po files use \n notation for line breaks
+                        const localeKey = m[1].replace('\r\n', '\n');
+
+                        // find this nugget in the locale's array of translations
+                        replacement = locale[localeKey];
                         if (typeof (replacement) === "undefined" || replacement === "") {
                             compilation.warnings.push(
                                 new Error(`Missing translation in ${filename}.\n '${m[1]}' : ${self.locale[0]}`));
-                            if (self.options.alwaysRemoveBrackets) {
-                                source = source.replace(m[0], m[1]);
-                            }
-                        } else {
-                            var formatItemsGroup = m[2];
-                            if (formatItemsGroup) {
-                                const formatItems = formatItemsGroup
-                                    .slice(3)
-                                    .split('|||');
 
-                                replacement = replacement.replace(/(%\d+)/g, (value) => {
-                                    var identifier = parseInt(value.slice(1));
-                                    if (!isNaN(identifier) && formatItems.length > identifier) {
-                                        return formatItems[identifier];
-                                    } else {
-                                        return value;
-                                    }
-                                });
+                            if (self.options.alwaysRemoveBrackets) {
+                                replacement = nuggetSyntaxRemoved;
+                            } else {
+                                continue; // leave this nugget alone
                             }
-                            source = source.replace(m[0], replacement);
                         }
                     }
+
+                    // format nuggets
+                    var formatItemsMatch = m[0].match(/\|\|\|(.+?)(?:\/\/\/.+?)?\]\]\]/s)
+                    if (formatItemsMatch) {
+                        const formatItems = formatItemsMatch[1]
+                            .split('|||');
+
+                        replacement = replacement.replace(/(%\d+)/g, (value) => {
+                            var identifier = parseInt(value.slice(1));
+                            if (!isNaN(identifier) && formatItems.length > identifier) {
+                                return formatItems[identifier];
+                            } else {
+                                return value;
+                            }
+                        });
+                    }
+
+                    // replace the source with our translations
+                    source = source.replace(m[0], replacement);
                 }
 
                 compilation.assets[filename] =

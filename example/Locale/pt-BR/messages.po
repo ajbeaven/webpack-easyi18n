@@ -21,6 +21,26 @@ msgid "Second Forgot Translation"
 msgstr ""
 
 #: _Layout.html:19
+msgid ""
+"Two\n"
+"lines"
+msgstr ""
+"Dois\n"
+"linhas"
+
+#: _Layout.html:19
+msgid "multiple %0"
+msgstr "múltiplo %0"
+
+#: _Layout.html:19
+msgid "on"
+msgstr "sobre"
+
+#: _Layout.html:19
+msgid "a single line"
+msgstr "uma única linha"
+
+#: _Layout.html:19
 msgid "Hello, %0. My Name is %1."
 msgstr "Olá %0. Meu nome é %1."
 

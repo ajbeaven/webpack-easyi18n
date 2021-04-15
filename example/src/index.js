@@ -6,4 +6,5 @@ document.write("[[[Forgot Translation]]]");
 document.write("[[[Second Forgot Translation]]]");
 document.write(`[[[Two
 lines]]]`);
+document.write('[[[multiple %0|||nuggets]]] [[[on]]] [[[a single line]]]')
 document.write("[[[Hello, %0. My Name is %1.|||John|||Andrew]]]");
