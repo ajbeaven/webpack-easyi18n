@@ -1,30 +1,27 @@
 const Path = require("path");
 const Webpack = require("webpack");
-const I18N = require("../src"); //require('webpack-easyi18n')
+const EasyI18nPlugin = require("../src"); //require('webpack-easyi18n')
 
-var Locales = {
+var locales = {
     "en-gb": null,
     "pt-br": "pt-BR/messages.po"
 };
 
-module.exports = Object.keys(Locales).map(function (locale) {
-
-    var plugins = [];
-
+module.exports = Object.keys(locales).map(function (locale) {
     return {
         mode: 'development',
         entry: Path.join(__dirname, "src", "index"),
         devtool: "source-map",
         output: {
-            filename: Locales[locale] === null ? "js/[name].[hash].js" : "js/[name].[hash]." + locale + ".js",
+            filename: locales[locale] === null ? "js/[name].[hash].js" : "js/[name].[hash]." + locale + ".js",
             path: Path.join(__dirname, "dist"),
             publicPath: ""
         },
-        plugins: plugins.concat([
-            new I18N([locale, Locales[locale]], {
+        plugins: [
+            new EasyI18nPlugin([locale, locales[locale]], {
                 srcPath: Path.join(__dirname, "./src"),
-                localesPath: Path.join(__dirname, "./Locale"),
+                localesPath: Path.join(__dirname, "./locale"),
             })
-        ])
+        ]
     };
 });
