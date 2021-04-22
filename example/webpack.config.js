@@ -14,7 +14,7 @@ module.exports = Object.keys(locales).map(function (locale) {
         entry: Path.join(__dirname, "src", "index"),
         devtool: "source-map",
         output: {
-            filename: locales[locale] === null ? "js/[name].[hash].js" : "js/[name].[hash]." + locale + ".js",
+            filename: locales[locale] === null ? "js/[name].[contenthash].js" : "js/[name].[contenthash." + locale + ".js",
             path: Path.join(__dirname, "dist"),
             publicPath: ""
         },
