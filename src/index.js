@@ -118,8 +118,7 @@ EasyI18nPlugin.prototype.apply = function (compiler) {
                     source = source.replace(m[0], replacement);
                 }
 
-                compilation.assets[filename] =
-                    new ConcatSource(`/**i18n replaced ${self.locale[0]}**/`, "\n", source);
+                compilation.assets[filename] = new ConcatSource(source);
             });
         });
 
