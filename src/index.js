@@ -1,4 +1,4 @@
-const ConcatSource = require("webpack-sources").ConcatSource;
+const { sources } = require('webpack');
 const path = require("path");
 const {
     readFileSync,
@@ -121,7 +121,7 @@ EasyI18nPlugin.prototype.apply = function (compiler) {
                         source = source.replace(m[0], replacement);
                     }
 
-                    compilation.assets[filename] = new ConcatSource(source);
+                    compilation.updateAsset(filename, new sources.RawSource(source));
                 });
             }
         );
