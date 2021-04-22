@@ -1,6 +1,7 @@
 const Path = require("path");
 const Webpack = require("webpack");
 const EasyI18nPlugin = require("../src"); //require('webpack-easyi18n')
+const HtmlWebpackPlugin = require('html-webpack-plugin');
 
 var locales = {
     "en-gb": null,
@@ -21,7 +22,10 @@ module.exports = Object.keys(locales).map(function (locale) {
             new EasyI18nPlugin([locale, locales[locale]], {
                 srcPath: Path.join(__dirname, "./src"),
                 localesPath: Path.join(__dirname, "./locale"),
-            })
+            }),
+            new HtmlWebpackPlugin({
+                filename: locales[locale] === null ? 'index.html' : 'index.' + locale + '.html',
+            }),
         ]
     };
 });

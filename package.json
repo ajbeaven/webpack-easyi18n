@@ -32,6 +32,7 @@
     },
     "homepage": "https://github.com/ajbeaven/webpack-easyi18n#readme",
     "devDependencies": {
+        "html-webpack-plugin": "^5.3.1",
         "rimraf": "^3.0.2",
         "webpack": "^5.32.0",
         "webpack-cli": "^4.6.0"
