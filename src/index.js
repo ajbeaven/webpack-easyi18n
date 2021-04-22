@@ -1,4 +1,4 @@
-const { sources } = require('webpack');
+const { SourceMapSource } = require("webpack").sources;
 const path = require("path");
 const {
     readFileSync,
@@ -67,67 +67,78 @@ EasyI18nPlugin.prototype.apply = function (compiler) {
             },
             () => {
                 compilation.getAssets().forEach((asset) => {
-                    var filename = asset.name;
-                    var source = asset.source.source();
-
-                    // skip any files that have been excluded
-                    var modifyFile = typeof source === 'string'
-                        && (self.options.excludeUrls == null || !self.options.excludeUrls.some(excludedUrl => filename.includes(excludedUrl)))
-                        && (self.options.includeUrls == null || self.options.includeUrls.some(includedUrl => filename.includes(includedUrl)))
-                        ;
-                    if (!modifyFile) return;
-
-                    while ((m = regex.exec(source)) !== null) {
-                        if (m.index === regex.lastIndex) {
-                            regex.lastIndex++;
-                        }
-
-                        const nuggetSyntaxRemoved = m[1]
-                        if (self.locale[1] === null) {
-                            replacement = nuggetSyntaxRemoved;
-                        } else {
-                            // .po files use \n notation for line breaks
-                            const localeKey = m[1].replace('\r\n', '\n');
-
-                            // find this nugget in the locale's array of translations
-                            replacement = locale[localeKey];
-                            if (typeof (replacement) === "undefined" || replacement === "") {
-                                compilation.warnings.push(
-                                    new Error(`Missing translation in ${filename}.\n '${m[1]}' : ${self.locale[0]}`));
-
-                                if (self.options.alwaysRemoveBrackets) {
-                                    replacement = nuggetSyntaxRemoved;
-                                } else {
-                                    continue; // leave this nugget alone
-                                }
-                            }
-                        }
-
-                        // format nuggets
-                        var formatItemsMatch = m[0].match(/\|\|\|(.+?)(?:\/\/\/.+?)?\]\]\]/s)
-                        if (formatItemsMatch) {
-                            const formatItems = formatItemsMatch[1]
-                                .split('|||');
-
-                            replacement = replacement.replace(/(%\d+)/g, (value) => {
-                                var identifier = parseInt(value.slice(1));
-                                if (!isNaN(identifier) && formatItems.length > identifier) {
-                                    return formatItems[identifier];
-                                } else {
-                                    return value;
-                                }
-                            });
-                        }
-
-                        // replace the source with our translations
-                        source = source.replace(m[0], replacement);
-                    }
-
-                    compilation.updateAsset(filename, new sources.RawSource(source));
+                    localizeFile(asset.name, compilation);
                 });
             }
         );
     });
+
+    function localizeFile(filename, compilation) {
+        var originalSourceObj = compilation.assets[filename];
+        var originalSource = originalSourceObj.source();
+        var source = originalSource;
+
+        // skip any files that have been excluded
+        var modifyFile = typeof source === 'string'
+            && (self.options.excludeUrls == null || !self.options.excludeUrls.some(excludedUrl => filename.includes(excludedUrl)))
+            && (self.options.includeUrls == null || self.options.includeUrls.some(includedUrl => filename.includes(includedUrl)))
+            ;
+        if (!modifyFile) return;
+
+        while ((m = regex.exec(source)) !== null) {
+            if (m.index === regex.lastIndex) {
+                regex.lastIndex++;
+            }
+
+            const nuggetSyntaxRemoved = m[1]
+            if (self.locale[1] === null) {
+                replacement = nuggetSyntaxRemoved;
+            } else {
+                // .po files use \n notation for line breaks
+                const localeKey = m[1].replace('\r\n', '\n');
+
+                // find this nugget in the locale's array of translations
+                replacement = locale[localeKey];
+                if (typeof (replacement) === "undefined" || replacement === "") {
+                    compilation.warnings.push(
+                        new Error(`Missing translation in ${filename}.\n '${m[1]}' : ${self.locale[0]}`));
+
+                    if (self.options.alwaysRemoveBrackets) {
+                        replacement = nuggetSyntaxRemoved;
+                    } else {
+                        continue; // leave this nugget alone
+                    }
+                }
+            }
+
+            // format nuggets
+            var formatItemsMatch = m[0].match(/\|\|\|(.+?)(?:\/\/\/.+?)?\]\]\]/s)
+            if (formatItemsMatch) {
+                const formatItems = formatItemsMatch[1]
+                    .split('|||');
+
+                replacement = replacement.replace(/(%\d+)/g, (value) => {
+                    var identifier = parseInt(value.slice(1));
+                    if (!isNaN(identifier) && formatItems.length > identifier) {
+                        return formatItems[identifier];
+                    } else {
+                        return value;
+                    }
+                });
+            }
+
+            // replace the source with our translations
+            source = source.replace(m[0], replacement);
+        }
+
+        compilation.updateAsset(filename, new SourceMapSource(
+            source,
+            filename,
+            originalSourceObj.map(),
+            originalSource,
+            null,
+            true));
+    }
 };
 
 module.exports = EasyI18nPlugin;
