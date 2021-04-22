@@ -71,8 +71,10 @@ EasyI18nPlugin.prototype.apply = function (compiler) {
                     var source = asset.source.source();
 
                     // skip any files that have been excluded
-                    var modifyFile = self.options.excludeUrls == null
-                        || !self.options.excludeUrls.some(excludedUrl => filename.includes(excludedUrl));
+                    var modifyFile = (self.options.excludeUrls == null
+                        || !self.options.excludeUrls.some(excludedUrl => filename.includes(excludedUrl)))
+                        && (self.options.includeUrls == null || self.options.includeUrls.some(includedUrl => filename.includes(includedUrl)))
+                        ;
                     if (!modifyFile) return;
 
                     while ((m = regex.exec(source)) !== null) {
