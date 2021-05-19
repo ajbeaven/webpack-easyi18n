@@ -13,7 +13,7 @@ const defaultOptions = {
 
 function EasyI18nPlugin(locale, options = {}) {
     this.locale = locale;
-    this.options = Object.assign({}, options, defaultOptions);
+    this.options = Object.assign({}, defaultOptions, options);
 }
 
 function save(target) {
