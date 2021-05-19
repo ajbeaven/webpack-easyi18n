@@ -9,6 +9,7 @@ const gettextToI18Next = require("i18next-conv").gettextToI18next;
 
 const defaultOptions = {
     alwaysRemoveBrackets: true,
+    warnOnMissingTranslations: true,
 };
 
 function EasyI18nPlugin(locale, options = {}) {
@@ -100,8 +101,10 @@ EasyI18nPlugin.prototype.apply = function (compiler) {
                 // find this nugget in the locale's array of translations
                 replacement = locale[localeKey];
                 if (typeof (replacement) === "undefined" || replacement === "") {
-                    compilation.warnings.push(
-                        new Error(`Missing translation in ${filename}.\n '${m[1]}' : ${self.locale[0]}`));
+                    if (self.options.warnOnMissingTranslations) {
+                        compilation.warnings.push(
+                            new Error(`Missing translation in ${filename}.\n '${m[1]}' : ${self.locale[0]}`));
+                    }
 
                     if (self.options.alwaysRemoveBrackets) {
                         replacement = nuggetSyntaxRemoved;
