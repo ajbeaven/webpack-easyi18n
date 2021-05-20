@@ -8,7 +8,7 @@ const {
 const gettextToI18Next = require("i18next-conv").gettextToI18next;
 
 const defaultOptions = {
-    alwaysRemoveBrackets: true,
+    alwaysRemoveBrackets: false,
     warnOnMissingTranslations: true,
     excludeUrls: null,
     includeUrls: null,
