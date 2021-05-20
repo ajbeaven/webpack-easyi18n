@@ -57,6 +57,9 @@ module.exports = Object.keys(Locales).map(function(locale) {
 |**`srcPath`**|`{String}`|Directory that should be used to locate your source files with strings for replacement _(required)_|
 |**`localesPath`**|`{String}`|Directory containing the po files as referenced by 'Locales'  _(required)_|
 |**`alwaysRemoveBrackets`**|`{Boolean}`| If alwaysRemoveBrackets is true and a nugget is missing a translation, then the original string is retained but the brackets are removed _(default:false)_|
+|**`warnOnMissingTranslations`**|`{Boolean}`| If warnOnMissingTranslations is true a warning will be displayed on build if a nugget is missing a translation _(default:true)_|
+|**`excludeUrls`**|`{String[]}`| If a filepath contains any of the strings contained in this array, it will not be processed _(default:null)_|
+|**`includeUrls`**|`{String[]}`| If a filepath does not contains any of the strings contained in this array, it will not be processed _(default:null)_|
 
 A 'webpack-easyi18n-temp' directory beneath you locales directory is created on each Webpack build. There is no need to deploy this directory to production and can be removed, for example using rimraf and the WebpackShellPlugin:
 
