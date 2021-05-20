@@ -10,6 +10,8 @@ const gettextToI18Next = require("i18next-conv").gettextToI18next;
 const defaultOptions = {
     alwaysRemoveBrackets: true,
     warnOnMissingTranslations: true,
+    excludeUrls: null,
+    includeUrls: null,
 };
 
 function EasyI18nPlugin(locale, options = {}) {
