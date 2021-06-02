@@ -41,8 +41,13 @@ EasyI18nPlugin.prototype.apply = function (compiler) {
 
         mkdir(path.resolve(path.join(self.options.localesPath, "/webpack-easyi18n-temp/")));
 
+        console.log(`Reading translations from ${poPath}`)
         gettextToI18Next(locale, readFileSync(poPath), {})
-            .then(save(path.join(self.options.localesPath, `/webpack-easyi18n-temp/${locale}.json`)));
+            .then(() => {
+                var translationLookupPath = path.join(self.options.localesPath, `/webpack-easyi18n-temp/${locale}.json`);
+                save(translationLookupPath);
+                console.log(`${locale} translation lookup file created ${translationLookupPath}`);
+            });
     }
 
     // Unfortunately the regex below doesn't work as js flavoured regex makes only the last capture included
