@@ -33,7 +33,7 @@ const mkdir = function (dirPath) {
     }
 };
 
-EasyI18nPlugin.prototype.apply = function (compiler) {
+EasyI18nPlugin.prototype.apply = async function (compiler) {
     var self = this;
 
     const localeKey = self.locale[0];
@@ -45,12 +45,10 @@ EasyI18nPlugin.prototype.apply = function (compiler) {
         mkdir(path.resolve(path.join(self.options.localesPath, "/webpack-easyi18n-temp/")));
 
         console.log(`Reading translations from ${poPath}`)
-        gettextToI18Next(localeKey, readFileSync(poPath), {})
-            .then(() => {
-                var translationLookupPath = path.join(self.options.localesPath, `/webpack-easyi18n-temp/${localeKey}.json`);
-                save(translationLookupPath);
-                console.log(`${localeKey} translation lookup file created ${translationLookupPath}`);
-            });
+        await gettextToI18Next(localeKey, readFileSync(poPath), {});
+        var translationLookupPath = path.join(self.options.localesPath, `/webpack-easyi18n-temp/${localeKey}.json`);
+        save(translationLookupPath);
+        console.log(`${localeKey} translation lookup file created ${translationLookupPath}`);
     }
 
     // Unfortunately the regex below doesn't work as js flavoured regex makes only the last capture included
