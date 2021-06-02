@@ -35,18 +35,21 @@ const mkdir = function (dirPath) {
 
 EasyI18nPlugin.prototype.apply = function (compiler) {
     var self = this;
-    if (self.locale[1] !== null) {
-        var poPath = path.join(self.options.localesPath, self.locale[1]);
-        var locale = self.locale[0];
+
+    const localeKey = self.locale[0];
+    const localePoPath = self.locale[1];
+
+    if (localePoPath !== null) {
+        var poPath = path.join(self.options.localesPath, localePoPath);
 
         mkdir(path.resolve(path.join(self.options.localesPath, "/webpack-easyi18n-temp/")));
 
         console.log(`Reading translations from ${poPath}`)
-        gettextToI18Next(locale, readFileSync(poPath), {})
+        gettextToI18Next(localeKey, readFileSync(poPath), {})
             .then(() => {
-                var translationLookupPath = path.join(self.options.localesPath, `/webpack-easyi18n-temp/${locale}.json`);
+                var translationLookupPath = path.join(self.options.localesPath, `/webpack-easyi18n-temp/${localeKey}.json`);
                 save(translationLookupPath);
-                console.log(`${locale} translation lookup file created ${translationLookupPath}`);
+                console.log(`${localeKey} translation lookup file created ${translationLookupPath}`);
             });
     }
 
@@ -62,9 +65,9 @@ EasyI18nPlugin.prototype.apply = function (compiler) {
     //var regex = /\[\[\[(.+?)(?:\|\|\|(.+?))*(?:\/\/\/(.+?))?\]\]\]/s;
     var regex = /\[\[\[(.+?)(?:\|\|\|.+?)*(?:\/\/\/(.+?))?\]\]\]/s;
 
-    var locale;
-    if (self.locale[1] !== null) {
-        locale = require(path.join(self.options.localesPath, `/webpack-easyi18n-temp/${self.locale[0]}.json`));
+    var translationLookup;
+    if (localePoPath !== null) {
+        translationLookup = require(path.join(self.options.localesPath, `/webpack-easyi18n-temp/${localeKey}.json`));
     }
 
     compiler.hooks.compilation.tap('EasyI18nPlugin', (compilation) => {
@@ -89,8 +92,7 @@ EasyI18nPlugin.prototype.apply = function (compiler) {
         // skip any files that have been excluded
         var modifyFile = typeof source === 'string'
             && (self.options.excludeUrls == null || !self.options.excludeUrls.some(excludedUrl => filename.includes(excludedUrl)))
-            && (self.options.includeUrls == null || self.options.includeUrls.some(includedUrl => filename.includes(includedUrl)))
-            ;
+            && (self.options.includeUrls == null || self.options.includeUrls.some(includedUrl => filename.includes(includedUrl)));
         if (!modifyFile) return;
 
         while ((m = regex.exec(source)) !== null) {
@@ -99,18 +101,18 @@ EasyI18nPlugin.prototype.apply = function (compiler) {
             }
 
             const nuggetSyntaxRemoved = m[1]
-            if (self.locale[1] === null) {
+            if (localePoPath === null) {
                 replacement = nuggetSyntaxRemoved;
             } else {
                 // .po files use \n notation for line breaks
-                const localeKey = m[1].replace('\r\n', '\n');
+                const translationKey = m[1].replace('\r\n', '\n');
 
                 // find this nugget in the locale's array of translations
-                replacement = locale[localeKey];
+                replacement = translationLookup[translationKey];
                 if (typeof (replacement) === "undefined" || replacement === "") {
                     if (self.options.warnOnMissingTranslations) {
                         compilation.warnings.push(
-                            new Error(`Missing translation in ${filename}.\n '${m[1]}' : ${self.locale[0]}`));
+                            new Error(`Missing translation in ${filename}.\n '${m[1]}' : ${localeKey}`));
                     }
 
                     if (self.options.alwaysRemoveBrackets) {
