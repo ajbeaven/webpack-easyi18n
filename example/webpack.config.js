@@ -28,7 +28,8 @@ module.exports = Object.keys(locales).map(function (locale) {
                 includeUrls: [
                     '.html',
                     '.js'
-                ]
+                ],
+                alwaysRemoveBrackets: true,
             }),
         ]
     };
