@@ -69,10 +69,9 @@ class EasyI18nPlugin {
                         const filename = asset.name;
                         const originalSourceObj = compilation.assets[filename];
                         const originalSource = originalSourceObj.source();
-                        let source = originalSource;
 
                         // skip any files that have been excluded
-                        const modifyFile = typeof source === 'string'
+                        const modifyFile = typeof originalSource === 'string'
                             && (this.options.excludeUrls == null || !this.options.excludeUrls.some(excludedUrl => filename.includes(excludedUrl)))
                             && (this.options.includeUrls == null || this.options.includeUrls.some(includedUrl => filename.includes(includedUrl)));
                         if (!modifyFile) return;
@@ -89,19 +88,14 @@ class EasyI18nPlugin {
                         //const regex = /\[\[\[(.+?)(?:\|\|\|(.+?))*(?:\/\/\/(.+?))?\]\]\]/sg;
                         const regex = /\[\[\[(.+?)(?:\|\|\|.+?)*(?:\/\/\/(.+?))?\]\]\]/sg;
 
-                        let match = null;
-                        while ((match = regex.exec(source)) !== null) {
-                            // if (match.index === regex.lastIndex) {
-                            //     regex.lastIndex++;
-                            // }
-
+                        let source = originalSource.replace(regex, (originalText, nuggetSyntaxRemoved) => {
                             let replacement = null;
-                            const nuggetSyntaxRemoved = match[1]
+
                             if (localePoPath === null) {
                                 if (this.options.alwaysRemoveBrackets) {
                                     replacement = nuggetSyntaxRemoved;
                                 } else {
-                                    continue; // leave this nugget alone
+                                    return originalText; // leave this nugget alone
                                 }
                             } else {
                                 // .po files use \n notation for line breaks
@@ -118,13 +112,13 @@ class EasyI18nPlugin {
                                     if (this.options.alwaysRemoveBrackets) {
                                         replacement = nuggetSyntaxRemoved;
                                     } else {
-                                        continue; // leave this nugget alone
+                                        return originalText; // leave this nugget alone
                                     }
                                 }
                             }
 
                             // format nuggets
-                            var formatItemsMatch = match[0].match(/\|\|\|(.+?)(?:\/\/\/.+?)?\]\]\]/s)
+                            var formatItemsMatch = originalText.match(/\|\|\|(.+?)(?:\/\/\/.+?)?\]\]\]/s)
                             if (formatItemsMatch) {
                                 const formatItems = formatItemsMatch[1]
                                     .split('|||');
@@ -139,9 +133,8 @@ class EasyI18nPlugin {
                                 });
                             }
 
-                            // replace the source with our translations
-                            source = source.replace(match[0], replacement);
-                        }
+                            return replacement;
+                        });
 
                         compilation.updateAsset(filename, new SourceMapSource(
                             source,
