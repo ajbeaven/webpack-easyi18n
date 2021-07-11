@@ -24,12 +24,6 @@ class EasyI18nPlugin {
     }
 
     apply(compiler) {
-        const save = (target) => {
-            return result => {
-                writeFileSync(target, result);
-            };
-        }
-
         const mkdir = (dirPath) => {
             try {
                 mkdirSync(dirPath);
@@ -38,7 +32,7 @@ class EasyI18nPlugin {
             }
         };
 
-        compiler.hooks.compilation.tap('EasyI18nPlugin', (compilation) => {
+        compiler.hooks.thisCompilation.tap('EasyI18nPlugin', async (compilation) => {
             compilation.hooks.processAssets.tap(
                 {
                     name: 'EasyI18nPlugin',
@@ -54,9 +48,9 @@ class EasyI18nPlugin {
                         mkdir(path.resolve(path.join(this.options.localesPath, "/webpack-easyi18n-temp/")));
 
                         console.log(`Reading translations from ${poPath}`)
-                        await gettextToI18Next(localeKey, readFileSync(poPath), {});
+                        var lookupData = await gettextToI18Next(localeKey, readFileSync(poPath), {});
                         var translationLookupPath = path.join(this.options.localesPath, `/webpack-easyi18n-temp/${localeKey}.json`);
-                        save(translationLookupPath);
+                        writeFileSync(translationLookupPath, lookupData);
                         console.log(`${localeKey} translation lookup file created ${translationLookupPath}`);
                     }
 
