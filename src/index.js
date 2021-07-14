@@ -32,8 +32,8 @@ class EasyI18nPlugin {
             }
         };
 
-        compiler.hooks.thisCompilation.tap('EasyI18nPlugin', async (compilation) => {
-            compilation.hooks.processAssets.tap(
+        compiler.hooks.thisCompilation.tap('EasyI18nPlugin', (compilation) => {
+            compilation.hooks.processAssets.tapPromise(
                 {
                     name: 'EasyI18nPlugin',
                     state: compilation.PROCESS_ASSETS_STAGE_DERIVED,
