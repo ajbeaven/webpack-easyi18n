@@ -41,8 +41,8 @@ msgid "a single line"
 msgstr "uma única linha"
 
 #: _Layout.html:19
-msgid "Hello, %0. My Name is %1."
-msgstr "Olá %0. Meu nome é %1."
+msgid "Hello, '%0'. My Name is %1."
+msgstr "Olá \"%0\". Meu nome é %1."
 
 #: Errors\Http404.html:6
 msgid "Page not found"
