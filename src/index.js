@@ -15,12 +15,6 @@ class EasyI18nPlugin {
         includeUrls: null,
     };
 
-    static escapeSpeechMarks = (string) => {
-        return string
-            .replace(/'/g, '\\\'')
-            .replace(/"/g, '\\"');
-    }
-
     constructor(locale, options = {}) {
         this.locale = locale;
         this.options = {
@@ -133,7 +127,7 @@ class EasyI18nPlugin {
                                 });
                             }
 
-                            return EasyI18nPlugin.escapeSpeechMarks(replacement);
+                            return replacement;
                         });
 
                         compilation.updateAsset(filename, new SourceMapSource(
