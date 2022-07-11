@@ -1,0 +1,12 @@
+{
+  "version": 1,
+  "isRoot": true,
+  "tools": {
+    "easyi18n.potgenerator": {
+      "version": "1.0.15",
+      "commands": [
+        "generatepot"
+      ]
+    }
+  }
+}

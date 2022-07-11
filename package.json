@@ -11,8 +11,9 @@
     "main": "src/index.js",
     "scripts": {
         "test": "echo \"Error: no test specified\" && exit 1",
-        "clean:example": "rimraf example\\dist example\\locale\\webpack-easyi18n-temp",
-        "build:example": "npm run clean:example && webpack -c example\\webpack.config.js"
+        "example:clean": "rimraf example\\dist example\\locale\\webpack-easyi18n-temp",
+        "example:build": "npm run example:clean && webpack -c example\\webpack.config.js",
+        "example:generatetransaltions": "dotnet tool restore && dotnet tool run generatepot --app-settings-paths=\"./example/appsettings.json\""
     },
     "dependencies": {
         "i18next-conv": "^4.0.3"
